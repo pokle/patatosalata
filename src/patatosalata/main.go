@@ -6,9 +6,10 @@ import (
   "os"
   "log"
   "io/ioutil"
+  "encoding/json"
 )
 
-func GET(url string) string {
+func GET(url string) []byte {
 
   resp, err := http.Get(url)
   if err != nil {
@@ -25,8 +26,26 @@ func GET(url string) string {
     log.Fatal(err)
   }
 
-  return string(result)
+  return result
+}
 
+type Cluster struct {
+  Name string
+  Nodes int64
+}
+
+type Message struct {
+  Clusters []Cluster
+}
+
+
+func parseMessage(bytes []byte) Message {
+  var m Message
+  err := json.Unmarshal(bytes, &m)
+  if err != nil {
+    log.Fatal(err)
+  }
+  return m
 }
 
 func main() {
@@ -38,6 +57,7 @@ func main() {
   url := os.Args[1]
 
 
-  fmt.Printf("%s\n", GET(url))
-
+  bytes := GET(url)
+  // fmt.Printf("%s\n", bytes)
+  fmt.Println(parseMessage(bytes))
 }
