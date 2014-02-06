@@ -59,5 +59,9 @@ func main() {
 
   bytes := GET(url)
   // fmt.Printf("%s\n", bytes)
-  fmt.Println(parseMessage(bytes))
+  message := parseMessage(bytes)
+
+  for _, v := range message.Clusters {
+    fmt.Println(v.Name, v.Nodes)
+  }
 }
